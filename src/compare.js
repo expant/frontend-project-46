@@ -18,7 +18,11 @@ export default (obj1, obj2) => {
       }
       return [...acc, ['+', prop2]];
     }, [])
-    .sort(([, prop1], [, prop2]) => (prop1[0] === prop2[0] ? 1 : prop1.localeCompare(prop2)))
+    .sort(([, prop1], [, prop2]) => { 
+      const firstLetterOfKey1 = prop1[0];
+      const firstLetterOfKey2 = prop2[0];
+      return firstLetterOfKey1 === firstLetterOfKey2 ? 1 : prop1.localeCompare(prop2);
+    })
     .map(([sign, prop]) => `  ${sign} ${prop}`)
     .join('\n');
 
