@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Compares two configuration files and shows a difference",
   "type": "module",
-  "main": "index.js",
+  "main": "gendiff.js",
   "bin": {
     "gendiff": "./gendiff.js"
   },
@@ -26,6 +26,8 @@
     "eslint-plugin-import": "^2.28.1"
   },
   "dependencies": {
-    "commander": "^11.0.0"
+    "commander": "^11.0.0",
+    "lodash": "^4.17.21",
+    "path": "^0.12.7"
   }
 }
