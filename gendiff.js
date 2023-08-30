@@ -10,6 +10,6 @@ program
   .argument('<filepath1>')
   .argument('<filepath2>')
   .option('-f, --format [type]', 'output format')
-  .action(proccesFiles);
+  .action((filepath1, filepath2) => console.log(proccesFiles(filepath1, filepath2)));
 
 program.parse();
