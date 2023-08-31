@@ -16,7 +16,7 @@ export default (obj1, obj2) => {
     const propWithPlusSign = { sign: '+', ...prop2 };
 
     if (_.has(obj1, key) && _.has(obj2, key)) {
-      return obj1[key] === obj2[key]
+      return prop1.val === prop2.val
         ? [...acc, prop1]
         : [...acc, propWithMinusSign, propWithPlusSign];
     }
