@@ -8,7 +8,7 @@
     "gendiff": "./gendiff.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,12 @@
   },
   "homepage": "https://github.com/expant/frontend-project-46#readme",
   "devDependencies": {
+    "@jest/globals": "^29.6.4",
     "eslint": "^8.48.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.28.1"
+    "eslint-plugin-import": "^2.28.1",
+    "jest": "^29.6.4",
+    "jest-cli": "^29.6.4"
   },
   "dependencies": {
     "commander": "^11.0.0",
