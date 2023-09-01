@@ -11,14 +11,14 @@
     "test": "npx jest"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/expant/frontend-project-46.git"
-  },
-  "author": "ELAGIN ANTON",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/expant/frontend-project-46/issues"
-  },
+      "type": "git",
+      "url": "git+https://github.com/expant/frontend-project-46.git"
+    },
+    "author": "ELAGIN ANTON",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/expant/frontend-project-46/issues"
+    },
   "homepage": "https://github.com/expant/frontend-project-46#readme",
   "devDependencies": {
     "@jest/globals": "^29.6.4",
