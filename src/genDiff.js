@@ -8,6 +8,12 @@ const objToStrBySign = (obj) => {
 };
 
 export default (obj1, obj2) => {
+  const lengthObj1 = Object.keys(obj1).length;
+  const lengthObj2 = Object.keys(obj1).length;
+  if (lengthObj1 === 0 && lengthObj2 === 0) {
+    return '{}';
+  }
+
   const keys = _.union(_.keys(obj1), _.keys(obj2));
   const diff = keys.reduce((acc, key) => {
     const prop1 = { key, val: obj1[key] };
