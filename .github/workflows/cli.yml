@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: action/chekout@v3
-      - uses: action/setup-node@v3
+      - uses: actions/chekout@v3
+      - uses: actions/setup-node@v3
         with:
           cache: 'npm'
       - run: make install
