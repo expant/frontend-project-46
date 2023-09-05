@@ -1,0 +1,19 @@
+name: cli
+
+on: push
+
+jobs:
+  cli: 
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: action/chekout@v3
+      - uses: action/setup-node@v3
+        with:
+          cache: 'npm'
+      - run: make install
+      - name: lint
+        run: make lint 
+      - name: test
+        run: make test
+   
