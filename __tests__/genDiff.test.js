@@ -1,11 +1,11 @@
 // @ts-check
 
 import { test, expect } from '@jest/globals';
-import path from 'path';
+import path, { dirname } from 'path';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import gendiff from '../src/gendiff.js';
+
+import gendiff from '../src/genDiff.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
