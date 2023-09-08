@@ -1,14 +1,11 @@
-import { readFileSync } from 'node:fs';
-import { cwd } from 'node:process';
 import path from 'node:path';
 import yaml from 'js-yaml';
 
-import gendiff from './genDiff.js';
-
-const yamlToObj = () => ;
-
-const jsonToObj = () => ;
-
-export default (filepath1, filepath2) => {
-  
+export default (file, format) => {
+  switch (format) {
+    case '.json': return JSON.parse(file);
+    case '.yml': return yaml.load(file);
+    case '.yaml': return yaml.load(file);
+    default: throw new Error(`wrong format: ${format}`);
+  }
 };
