@@ -1,39 +1,38 @@
 import _ from 'lodash';
 
-const objToStrBySign = (obj) => {
-  if (_.has(obj, 'sign')) {
-    return `  ${obj.sign} ${obj.key}: ${obj.val}`;
-  }
-  return `    ${obj.key}: ${obj.val}`;
-};
-
 export default (obj1, obj2) => {
-  const lengthObj1 = Object.keys(obj1).length;
-  const lengthObj2 = Object.keys(obj1).length;
-  if (lengthObj1 === 0 && lengthObj2 === 0) {
-    return '{}';
-  }
+  const iter = (currentObj1, currentObj2, isSigns = true) => {
+    const keys = _.union(_.keys(currentObj1), _.keys(currentObj2)); 
 
-  const keys = _.union(_.keys(obj1), _.keys(obj2));
-  const diff = keys.reduce((acc, key) => {
-    const prop1 = { key, val: obj1[key] };
-    const prop2 = { key, val: obj2[key] };
-    const propWithMinusSign = { sign: '-', ...prop1 };
-    const propWithPlusSign = { sign: '+', ...prop2 };
+    const diff = keys.map((key) => {
 
-    if (_.has(obj1, key) && _.has(obj2, key)) {
-      return prop1.val === prop2.val
-        ? [...acc, prop1]
-        : [...acc, propWithMinusSign, propWithPlusSign];
-    }
+      if (_.has(currentObj1, key) && _.has(currentObj2, key)) {
+        if (_.isObject(currentObj1[key]) && _.isObject(currentObj2[key])) {
+          return { sign: '', [key]: iter(currentObj1[key], currentObj2[key]) }
+        }
 
-    if (_.has(obj1, key) && !_.has(obj2, key)) {
-      return [...acc, propWithMinusSign];
-    }
-    return [...acc, propWithPlusSign];
-  }, []);
+        const prop1 = { sign: '-', [key]: currentObj1[key] };
+        const prop2 = { sign: '+', [key]: currentObj2[key] };
+        return prop1[key] === prop2[key] 
+          ? { sign: '', [key]: currentObj1[key] } : [prop1, prop2];
+      }
 
-  const sorted = _.sortBy(diff, 'key');
-  const result = sorted.map(objToStrBySign).join('\n');
-  return `{\n${result}\n}`;
+      if (_.has(currentObj1, key) && !_.has(currentObj2, key)) {
+        return { sign: '-', [key]: _.cloneDeep(currentObj1[key]) };
+      }
+      return { sign: '+', [key]: _.cloneDeep(currentObj2[key]) };
+      })
+      .flat();
+
+    // console.log(JSON.stringify(diff));
+    return diff;
+    
+    // const sortedDiff = _.sortBy(diff, );
+    // return sortedDiff;
+  };
+
+  console.log(JSON.stringify(iter(obj1, obj2)));
+  return iter(obj1, obj2);
 };
+
+
