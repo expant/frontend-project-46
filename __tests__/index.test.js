@@ -41,12 +41,7 @@ test('gendiff', () => {
   const obj1 = JSON.parse(file1);
   const obj2 = JSON.parse(file2);
 
-  // expect(gendiff({}, {})).toEqual('{}');
-
   const expectedFile1 = readFileSync(getFixturePath('expectedFile1.txt'), 'utf-8');
   const diff = genDiff(obj1, obj2);
   expect(genStylishFormat(diff)).toEqual(expectedFile1); 
-
-  // const expectedFile2 = readFileSync(getFixturePath('expectedFile2.txt'), 'utf-8');
-  // expect(gendiff(obj1, {})).toEqual(expectedFile2);
 });
