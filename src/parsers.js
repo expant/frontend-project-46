@@ -1,4 +1,3 @@
-import path from 'node:path';
 import yaml from 'js-yaml';
 
 export default (file, format) => {
