@@ -39,4 +39,3 @@ test('gendiff /.yml /.yaml', () => {
   expect(genStylishFormat(diff)).toEqual(expectedStylishFormat);
   expect(genPlainFormat(diff)).toEqual(expectedPlainFormat);
 });
-

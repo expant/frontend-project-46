@@ -1,27 +1,32 @@
-import _ from 'lodash';
+const getStrOrNo = (val) => (typeof (val) === 'string' ? `'${val}'` : val);
 
-const plain = (diff) => {
-  console.log(diff);
-  const list = diff.map((node) => {
-    const { val } = node;
+const buildLine = (node, path) => {
+  const { state, key, val } = node;
+  if (Array.isArray(val) && state === 'noChanged') {
+    return plain(val, `${path}${key}.`);
+  }
+  const newVal = getStrOrNo(val);
+  const newVal2 = Array.isArray(newVal) ? '[complex value]' : newVal;
 
-    if (!Array.isArray(val)) {
-      const { sign, key } = node;
+  switch (state) {
+    case 'added':
+      return `Property '${path}${key}' was added with value: ${newVal2}`;
+    case 'removed':
+      return `Property '${path}${key}' was removed`;
+    case 'updated':
+      const newVal3 = Array.isArray(node.newVal) ? '[complex value]' : node.newVal;
+      return `Property '${path}${key}' was updated. From ${newVal2} to ${getStrOrNo(newVal3)}`;
+    default:
+  }
+};
 
-      if (sign === '+') {
-        return `Property '${key}' was added with value: ${val}`;
-      } else if (sign === '-') {
-        return `Property '${key}' was removed`;
-      } else if (sign === '') {
-        return '';
-      }
-    }
+const plain = (diff, path = '') => {
+  const lines = diff
+    .map((node) => buildLine(node, path))
+    .filter((line) => line !== undefined)
+    .join('\n');
 
-    return plain(val);
- 
-  });
-
-  return list.filter((line) => line !== '').join('\n');
+  return lines;
 };
 
 export default plain;

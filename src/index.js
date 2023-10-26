@@ -19,5 +19,3 @@ export default (filepath1, filepath2, formatName) => {
   const obj2 = parse(file2, extname(filepath2));
   return genDiff(obj1, obj2, formatName);
 };
-
-
