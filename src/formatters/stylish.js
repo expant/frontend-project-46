@@ -1,40 +1,43 @@
-import _ from 'lodash';
+const INDENTS_COUNT = 4;
+const LEFT_SHIFT = 2;
+const REPLACER = ' ';
 
-export default (diff, replacer = ' ', indentsCount = 4) => {
-  const leftShift = 2;
-  const iter = (currentNode, depth) => {
-    if (!_.isObject(currentNode) && !Array.isArray(currentNode)) {
-      return `${currentNode}`;
+export default (diff) => {
+  const iter = (node, depth) => {
+    if (!Array.isArray(node)) {
+      return `${node}`;
     }
 
-    const indentSize = depth * indentsCount;
-    const indent = replacer.repeat(indentSize);
-    const indentWithSign = replacer.repeat(indentSize - leftShift);
+    const indentSize = depth * INDENTS_COUNT;
+    const indent = REPLACER.repeat(indentSize);
+    const indentWithSign = REPLACER.repeat(indentSize - LEFT_SHIFT);
+    const bracketIndent = REPLACER.repeat(indentSize - INDENTS_COUNT);
 
-    if (Array.isArray(currentNode)) {
-      const formattedNode = currentNode.reduce((acc, node) => {
-        const { sign, key, val } = node;
+    const lines = node.map((line) => {
+      const { state, key } = line;
+      const val = iter(line.val, depth + 1);
+      let result;
 
-        const leftSide = sign !== ''
-          ? `${acc}${indentWithSign}${sign} ${key}: ` : `${acc}${indent}${sign}${key}: `;
-
-        if (!Array.isArray(val) && !_.isObject(val)) {
-          return `${leftSide}${val}\n`;
+      switch (state) {
+        case 'updated': {
+          const line1 = `${indentWithSign}- ${key}: ${val}`;
+          const line2 = `${indentWithSign}+ ${key}: ${line.newVal}`;
+          result = [line1, line2].join('\n');
+          break;
         }
-
-        const nextNode = iter(val, depth + 1);
-        return nextNode[0] === '{'
-          ? `${leftSide}${nextNode}\n`
-          : `${leftSide}{\n${nextNode}${indent}}\n`;
-      }, '');
-
-      return formattedNode;
-    }
-
-    const bracketIndent = replacer.repeat(indentSize - indentsCount);
-    const lines = Object
-      .entries(currentNode)
-      .map(([key, val]) => `${indent}${key}: ${iter(val, depth + 1)}`);
+        case 'added':
+          result = `${indentWithSign}+ ${key}: ${val}`;
+          break;
+        case 'removed':
+          result = `${indentWithSign}- ${key}: ${val}`;
+          break;
+        case 'noChanged':
+          result = `${indent}${key}: ${val}`;
+          break;
+        default: throw new Error(`Unknown state: ${state}`);
+      }
+      return result;
+    });
 
     return [
       '{',
@@ -43,5 +46,5 @@ export default (diff, replacer = ' ', indentsCount = 4) => {
     ].join('\n');
   };
 
-  return `{\n${iter(diff, 1)}}`;
+  return iter(diff, 1);
 };

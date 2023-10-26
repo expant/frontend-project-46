@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 
 import genDiff from '../src/genDiff.js';
 import genStylishFormat from '../src/formatters/stylish.js';
+import genPlainFormat from '../src/formatters/plain.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,9 +20,11 @@ test('gendiff /.json', () => {
   const obj1 = JSON.parse(file1);
   const obj2 = JSON.parse(file2);
 
-  const expectedFile1 = readFileSync(getFixturePath('expectedFile1.txt'), 'utf-8');
+  const expectedStylishFormat = readFileSync(getFixturePath('expectedStylishFormat.txt'), 'utf-8');
+  const expectedPlainFormat = readFileSync(getFixturePath('expectedPlainFormat.txt'), 'utf-8');
   const diff = genDiff(obj1, obj2);
-  expect(genStylishFormat(diff)).toEqual(expectedFile1);
+  expect(genStylishFormat(diff)).toEqual(expectedStylishFormat);
+  expect(genPlainFormat(diff)).toEqual(expectedPlainFormat);
 });
 
 test('gendiff /.yml /.yaml', () => {
@@ -30,7 +33,9 @@ test('gendiff /.yml /.yaml', () => {
   const obj1 = yaml.load(file1);
   const obj2 = yaml.load(file2);
 
-  const expectedFile1 = readFileSync(getFixturePath('expectedFile1.txt'), 'utf-8');
+  const expectedStylishFormat = readFileSync(getFixturePath('expectedStylishFormat.txt'), 'utf-8');
+  const expectedPlainFormat = readFileSync(getFixturePath('expectedPlainFormat.txt'), 'utf-8');
   const diff = genDiff(obj1, obj2);
-  expect(genStylishFormat(diff)).toEqual(expectedFile1);
+  expect(genStylishFormat(diff)).toEqual(expectedStylishFormat);
+  expect(genPlainFormat(diff)).toEqual(expectedPlainFormat);
 });

@@ -1,25 +1,46 @@
 import _ from 'lodash';
 
-const iter = (currentObj1, currentObj2) => {
-  const keys = _.union(_.keys(currentObj1), _.keys(currentObj2));
+const genComplex = (node) => {
+  if (!_.isObject(node)) return node;
+  return Object
+    .entries(node)
+    .flatMap(([key, val]) => {
+      const obj = { state: 'noChanged', key, val };
+      if (!_.isObject(val)) return obj;
+      return { ...obj, val: genComplex(val) };
+    });
+};
 
+const genDiff = (obj1, obj2) => {
+  const keys = _.union(_.keys(obj1), _.keys(obj2));
   const diff = keys.flatMap((key) => {
-    if (_.has(currentObj1, key) && _.has(currentObj2, key)) {
-      if (_.isObject(currentObj1[key]) && _.isObject(currentObj2[key])) {
-        return { sign: '', key, val: iter(currentObj1[key], currentObj2[key]) };
+    if (_.has(obj1, key) && _.has(obj2, key)) {
+      if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
+        return {
+          state: 'noChanged',
+          key,
+          val: genDiff(obj1[key], obj2[key]),
+        };
       }
 
-      const prop1 = { sign: '-', key, val: currentObj1[key] };
-      const prop2 = { sign: '+', key, val: currentObj2[key] };
-      return currentObj1[key] === currentObj2[key] ? { ...prop1, sign: '' } : [prop1, prop2];
+      if (obj1[key] === obj2[key]) {
+        return { state: 'noChanged', key, val: obj1[key] };
+      }
+      const val = genComplex(obj1[key]);
+      const newVal = genComplex(obj2[key]);
+      return {
+        state: 'updated', key, val, newVal,
+      };
     }
 
-    if (_.has(currentObj1, key) && !_.has(currentObj2, key)) {
-      return { sign: '-', key, val: _.cloneDeep(currentObj1[key]) };
+    if (_.has(obj1, key) && !_.has(obj2, key)) {
+      const val = _.isObject(obj1[key]) ? genComplex(obj1[key]) : obj1[key];
+      return { state: 'removed', key, val };
     }
-    return { sign: '+', key, val: _.cloneDeep(currentObj2[key]) };
+    const val = _.isObject(obj2[key]) ? genComplex(obj2[key]) : obj2[key];
+    return { state: 'added', key, val };
   });
   return _.sortBy(diff, 'key');
 };
 
-export default (obj1, obj2) => iter(obj1, obj2);
+export default genDiff;
