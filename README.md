@@ -7,4 +7,4 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/1bd5936d88b6d182799e/test_coverage)](https://codeclimate.com/github/expant/frontend-project-46/test_coverage)
 
 #### gendiff
-[![gendiff](https://asciinema.org/a/tU242lYTQtB7xRkje2ND7r4ei.svg)](https://asciinema.org/a/tU242lYTQtB7xRkje2ND7r4ei)
+[![gendiff](https://asciinema.org/a/ojH3OASbDK1adGqi7ODWr2paF.svg)](https://asciinema.org/a/ojH3OASbDK1adGqi7ODWr2paF)
