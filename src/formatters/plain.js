@@ -5,25 +5,26 @@ const buildLine = (node, path) => {
   if (Array.isArray(val) && state === 'noChanged') {
     return plain(val, `${path}${key}.`);
   }
-  const newVal = getStrOrNo(val);
-  const newVal2 = Array.isArray(newVal) ? '[complex value]' : newVal;
 
+  const newVal = Array.isArray(getStrOrNo(val)) ? '[complex value]' : getStrOrNo(val);
   switch (state) {
     case 'added':
-      return `Property '${path}${key}' was added with value: ${newVal2}`;
+      return `Property '${path}${key}' was added with value: ${newVal}`;
     case 'removed':
       return `Property '${path}${key}' was removed`;
-    case 'updated':
-      const newVal3 = Array.isArray(node.newVal) ? '[complex value]' : node.newVal;
-      return `Property '${path}${key}' was updated. From ${newVal2} to ${getStrOrNo(newVal3)}`;
-    default:
+    case 'updated': {
+      const newVal2 = Array.isArray(node.newVal) ? '[complex value]' : node.newVal;
+      return `Property '${path}${key}' was updated. From ${newVal} to ${getStrOrNo(newVal2)}`;
+    }
+    case 'noChanged': return '';
+    default: throw new Error(`Unknown state: ${state}`);
   }
 };
 
 const plain = (diff, path = '') => {
   const lines = diff
     .map((node) => buildLine(node, path))
-    .filter((line) => line !== undefined)
+    .filter((line) => line !== '')
     .join('\n');
 
   return lines;

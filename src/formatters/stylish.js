@@ -16,17 +16,27 @@ export default (diff) => {
     const lines = node.map((line) => {
       const { state, key } = line;
       const val = iter(line.val, depth + 1);
+      let result;
 
       switch (state) {
-        case 'updated':
+        case 'updated': {
           const line1 = `${indentWithSign}- ${key}: ${val}`;
           const line2 = `${indentWithSign}+ ${key}: ${line.newVal}`;
-          return [line1, line2].join('\n');
-        case 'added': return `${indentWithSign}+ ${key}: ${val}`;
-        case 'removed': return `${indentWithSign}- ${key}: ${val}`;
-        case 'noChanged': return `${indent}${key}: ${val}`;
-        default:
+          result = [line1, line2].join('\n');
+          break;
+        }
+        case 'added':
+          result = `${indentWithSign}+ ${key}: ${val}`;
+          break;
+        case 'removed':
+          result = `${indentWithSign}- ${key}: ${val}`;
+          break;
+        case 'noChanged':
+          result = `${indent}${key}: ${val}`;
+          break;
+        default: throw new Error(`Unknown state: ${state}`);
       }
+      return result;
     });
 
     return [
