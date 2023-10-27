@@ -9,7 +9,7 @@ export default (obj1, obj2, formatName) => {
     case 'plain': return plain(diff);
     case 'stylish': return stylish(diff);
     case 'json': return json(diff);
-    default: 
+    default:
       throw new Error(`Unknown formatName: ${formatName}`);
   }
 };

@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
-test('test /.json /.yml /.yaml', () => {
+test('/.json /.yml /.yaml', () => {
   const jsonFile1 = readFileSync(getFixturePath('file1.json'), 'utf-8');
   const jsonFile2 = readFileSync(getFixturePath('file2.json'), 'utf-8');
   const obj1 = JSON.parse(jsonFile1);
