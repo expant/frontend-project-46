@@ -1,27 +1,24 @@
-const getStrOrNo = (val) => (typeof (val) === 'string' ? `'${val}'` : val);
-const getComplexValOrSimple = (val) => {
-  if (Array.isArray(getStrOrNo(val))) {
-    return '[complex value]';
-  }
-  return getStrOrNo(val);
-}
+const getStrOrAnyOtherType = (val) => (typeof (val) === 'string' ? `'${val}'` : val);
+const getComplexValOrSimple = (val) => (Array.isArray(val) ? '[complex value]' : val);
 
 const buildLine = (node, path) => {
   const { state, key, val } = node;
-  if (Array.isArray(val) && state === 'noChanged') { 
+  if (Array.isArray(val) && state === 'noChanged') {
     return plain(val, `${path}${key}.`);
   }
 
-  const newVal = getComplexValOrSimple(val); 
+  const strOrAnyOtherType = getStrOrAnyOtherType(val);
+  const newVal = getComplexValOrSimple(strOrAnyOtherType);
   switch (state) {
     case 'added':
       return `Property '${path}${key}' was added with value: ${newVal}`;
     case 'removed':
       return `Property '${path}${key}' was removed`;
     case 'updated': {
-      const newVal2 = Array.isArray(node.newVal) ? '[complex value]' : node.newVal;
-      return `Property '${path}${key}' was updated. From ${newVal} to ${getStrOrNo(newVal2)}`;
-    } 
+      const strOrAnyOtherTypeUpdated = getStrOrAnyOtherType(node.newVal);
+      const newValUpdated = getComplexValOrSimple(strOrAnyOtherTypeUpdated);
+      return `Property '${path}${key}' was updated. From ${newVal} to ${newValUpdated}`;
+    }
     case 'noChanged': return '';
     default: throw new Error(`Unknown state: ${state}`);
   }
@@ -29,11 +26,9 @@ const buildLine = (node, path) => {
 
 const removeEmptyItems = (item) => item !== '';
 
-const plain = (diff, path = '') => {
-  return diff
-    .map((node) => buildLine(node, path))
-    .filter(removeEmptyItems)
-    .join('\n');
-};
+const plain = (diff, path = '') => diff
+  .map((node) => buildLine(node, path))
+  .filter(removeEmptyItems)
+  .join('\n');
 
 export default plain;
