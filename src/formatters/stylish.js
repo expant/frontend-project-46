@@ -41,9 +41,9 @@ export default (diff) => {
 
     const indentSize = depth * INDENTS_COUNT;
     const [indent, indentWithSign, bracketIndent] = getIndents(indentSize);
-    const lines = node.map((obj, indents) => {
+    const lines = node.map((obj) => {
       const val = iter(obj.val, depth + 1);
-      const line = buildLine({ ...obj, val }, [indent, indentWithSign]); 
+      const line = buildLine({ ...obj, val }, [indent, indentWithSign]);
       return line;
     });
 
