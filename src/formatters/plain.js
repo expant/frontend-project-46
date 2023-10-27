@@ -1,12 +1,19 @@
 const getStrOrNo = (val) => (typeof (val) === 'string' ? `'${val}'` : val);
+const getComplexValOrSimple = (val) => {
+  if (Array.isArray(getStrOrNo(val))) {
+    return '[complex value]';
+  }
+  return getStrOrNo(val);
+}
 
 const buildLine = (node, path) => {
   const { state, key, val } = node;
-  if (Array.isArray(val) && state === 'noChanged') {
+  if (Array.isArray(val) && state === 'noChanged') { // 2
     return plain(val, `${path}${key}.`);
   }
+  if (state === 'noChanged') return ''; // 3
 
-  const newVal = Array.isArray(getStrOrNo(val)) ? '[complex value]' : getStrOrNo(val);
+  const newVal = getComplexValOrSimple(val); 
   switch (state) {
     case 'added':
       return `Property '${path}${key}' was added with value: ${newVal}`;
@@ -15,19 +22,18 @@ const buildLine = (node, path) => {
     case 'updated': {
       const newVal2 = Array.isArray(node.newVal) ? '[complex value]' : node.newVal;
       return `Property '${path}${key}' was updated. From ${newVal} to ${getStrOrNo(newVal2)}`;
-    }
-    case 'noChanged': return '';
+    } 
     default: throw new Error(`Unknown state: ${state}`);
   }
 };
 
-const plain = (diff, path = '') => {
-  const lines = diff
-    .map((node) => buildLine(node, path))
-    .filter((line) => line !== '')
-    .join('\n');
+const removeEmptyItems = (item) => item !== '';
 
-  return lines;
+const plain = (diff, path = '') => {
+  return diff
+    .map((node) => buildLine(node, path))
+    .filter(removeEmptyItems)
+    .join('\n');
 };
 
 export default plain;
