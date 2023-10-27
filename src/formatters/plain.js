@@ -8,10 +8,9 @@ const getComplexValOrSimple = (val) => {
 
 const buildLine = (node, path) => {
   const { state, key, val } = node;
-  if (Array.isArray(val) && state === 'noChanged') { // 2
+  if (Array.isArray(val) && state === 'noChanged') { 
     return plain(val, `${path}${key}.`);
   }
-  if (state === 'noChanged') return ''; // 3
 
   const newVal = getComplexValOrSimple(val); 
   switch (state) {
@@ -23,6 +22,7 @@ const buildLine = (node, path) => {
       const newVal2 = Array.isArray(node.newVal) ? '[complex value]' : node.newVal;
       return `Property '${path}${key}' was updated. From ${newVal} to ${getStrOrNo(newVal2)}`;
     } 
+    case 'noChanged': return '';
     default: throw new Error(`Unknown state: ${state}`);
   }
 };
