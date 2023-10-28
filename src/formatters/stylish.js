@@ -12,27 +12,18 @@ const getIndents = (size) => {
 const buildLine = (node, indents) => {
   const { state, key, val } = node;
   const [indent, indentWithSign] = indents;
-  let line;
 
   switch (state) {
     case 'updated': {
       const line1 = `${indentWithSign}- ${key}: ${val}`;
       const line2 = `${indentWithSign}+ ${key}: ${node.newVal}`;
-      line = [line1, line2].join('\n');
-      break;
+      return [line1, line2].join('\n');
     }
-    case 'added':
-      line = `${indentWithSign}+ ${key}: ${val}`;
-      break;
-    case 'removed':
-      line = `${indentWithSign}- ${key}: ${val}`;
-      break;
-    case 'noChanged':
-      line = `${indent}${key}: ${val}`;
-      break;
+    case 'added': return `${indentWithSign}+ ${key}: ${val}`;
+    case 'removed': return `${indentWithSign}- ${key}: ${val}`;
+    case 'noChanged': return `${indent}${key}: ${val}`;
     default: throw new Error(`Unknown state: ${state}`);
   }
-  return line;
 };
 
 export default (diff) => {
