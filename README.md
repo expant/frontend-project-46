@@ -49,5 +49,8 @@ Difference - a program that determines the difference between two data structure
 #### Gendiff in the json format
 `gendiff -f json <filepath1> <filepath2>`
 
-#### gendiff
+#### Demonstration of basic commands
 [![gendiff](https://asciinema.org/a/ojH3OASbDK1adGqi7ODWr2paF.svg)](https://asciinema.org/a/ojH3OASbDK1adGqi7ODWr2paF)
+
+#### Demonstration of structure output in json format
+[![gendiff](https://asciinema.org/a/kbYJdSf8jFsVloKG67Q5SnyeP.svg)](https://asciinema.org/a/kbYJdSf8jFsVloKG67Q5SnyeP)
