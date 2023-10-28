@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Compares two configuration files and shows a difference",
   "type": "module",
-  "main": "gendiff.js",
+  "main": "bin/gendiff.js",
   "bin": {
-    "gendiff": "gendiff.js"
+    "gendiff": "bin/gendiff.js"
   },
   "scripts": {
     "test": "npx jest"
