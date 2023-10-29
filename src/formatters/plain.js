@@ -1,4 +1,4 @@
-const defineTheValTypeAndReturn = (val) => {
+const formatOnType = (val) => {
   if (Array.isArray(val)) {
     return '[complex value]';
   }
@@ -11,22 +11,20 @@ const defineTheValTypeAndReturn = (val) => {
 const buildLine = (node, path) => {
   const { state, key, val } = node;
 
-  const newVal = defineTheValTypeAndReturn(val);
+  const newVal = formatOnType(val);
   switch (state) {
     case 'added':
       return `Property '${path}${key}' was added with value: ${newVal}`;
     case 'removed':
       return `Property '${path}${key}' was removed`;
     case 'updated': {
-      const newValUpdated = defineTheValTypeAndReturn(node.newVal);
+      const newValUpdated = formatOnType(node.newVal);
       return `Property '${path}${key}' was updated. From ${newVal} to ${newValUpdated}`;
     }
     case 'noChanged': return '';
     default: throw new Error(`Unknown state: ${state}`);
   }
 };
-
-const removeEmptyItems = (item) => item !== '';
 
 const plain = (diff, path = '') => diff
   .map((node) => {
@@ -36,7 +34,7 @@ const plain = (diff, path = '') => diff
     }
     return buildLine(node, path);
   })
-  .filter(removeEmptyItems)
+  .filter((el) => el !== '')
   .join('\n');
 
 export default plain;
