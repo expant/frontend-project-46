@@ -34,8 +34,11 @@ export default (diff) => {
     const [indent, indentWithSign, bracketIndent] = getIndents(indentSize);
     const lines = node.map((obj) => {
       const val = iter(obj.val, depth + 1);
-      const line = buildLine({ ...obj, val }, [indent, indentWithSign]);
-      return line;
+      if (obj.state === 'updated') {
+        const newVal = iter(obj.newVal, depth + 1);
+        return buildLine({ ...obj, val, newVal }, [indent, indentWithSign]);
+      }
+      return buildLine({ ...obj, val }, [indent, indentWithSign]);
     });
 
     return [
