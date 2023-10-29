@@ -10,9 +10,6 @@ const defineTheValTypeAndReturn = (val) => {
 
 const buildLine = (node, path) => {
   const { state, key, val } = node;
-  if (Array.isArray(val) && state === 'noChanged') {
-    return plain(val, `${path}${key}.`);
-  }
 
   const newVal = defineTheValTypeAndReturn(val);
   switch (state) {
@@ -32,7 +29,13 @@ const buildLine = (node, path) => {
 const removeEmptyItems = (item) => item !== '';
 
 const plain = (diff, path = '') => diff
-  .map((node) => buildLine(node, path))
+  .map((node) => {
+    const { state, key, val } = node;
+    if (Array.isArray(val) && state === 'noChanged') {
+      return plain(val, `${path}${key}.`);
+    }
+    return buildLine(node, path);
+  })
   .filter(removeEmptyItems)
   .join('\n');
 

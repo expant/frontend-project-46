@@ -15,14 +15,6 @@ const checkWithEqualKeys = (obj1, obj2, key) => {
   const valObj1 = obj1[key];
   const valObj2 = obj2[key];
 
-  if (_.isObject(valObj1) && _.isObject(valObj2)) {
-    return {
-      state: 'noChanged',
-      key,
-      val: genDiff(valObj1, valObj2),
-    };
-  }
-
   if (valObj1 === valObj2) {
     return { state: 'noChanged', key, val: valObj1 };
   }
@@ -47,6 +39,11 @@ const genDiff = (obj1, obj2) => {
   const keys = _.union(_.keys(obj1), _.keys(obj2));
   const diff = keys.flatMap((key) => {
     if (_.has(obj1, key) && _.has(obj2, key)) {
+      if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
+        const val = genDiff(obj1[key], obj2[key]);
+        return { state: 'noChanged', key, val };
+      }
+
       return checkWithEqualKeys(obj1, obj2, key);
     }
 
