@@ -11,7 +11,7 @@ const genComplex = (node) => {
     });
 };
 
-const checkWithTheSameKeys = (obj1, obj2, key) => {
+const checkWithEqualKeys = (obj1, obj2, key) => {
   const valObj1 = obj1[key];
   const valObj2 = obj2[key];
 
@@ -34,7 +34,7 @@ const checkWithTheSameKeys = (obj1, obj2, key) => {
   };
 };
 
-const checkWithTheNotSameKeys = (obj1, obj2, key) => {
+const checkWithUnequalKeys = (obj1, obj2, key) => {
   if (_.has(obj1, key) && !_.has(obj2, key)) {
     const val = _.isObject(obj1[key]) ? genComplex(obj1[key]) : obj1[key];
     return { state: 'removed', key, val };
@@ -47,11 +47,12 @@ const genDiff = (obj1, obj2) => {
   const keys = _.union(_.keys(obj1), _.keys(obj2));
   const diff = keys.flatMap((key) => {
     if (_.has(obj1, key) && _.has(obj2, key)) {
-      return checkWithTheSameKeys(obj1, obj2, key);
+      return checkWithEqualKeys(obj1, obj2, key);
     }
 
-    return checkWithTheNotSameKeys(obj1, obj2, key);
+    return checkWithUnequalKeys(obj1, obj2, key);
   });
+
   return _.sortBy(diff, 'key');
 };
 
