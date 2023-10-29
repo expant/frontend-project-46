@@ -8,7 +8,7 @@
 
 # Difference generation
 
-Difference - a program that determines the difference between two data structures.
+Difference generation - a program that determines the difference between two data structures.
 
 * Supports different input formats: `yaml`, `json`
 * Generates reports in the form: `plain text`, `stylish` и `json`
