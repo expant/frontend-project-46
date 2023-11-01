@@ -9,27 +9,32 @@ const formatOnType = (val) => {
 };
 
 const buildLine = (node, path) => {
-  const { state, key, val } = node;
+  const { type, key } = node;
 
-  const newVal = formatOnType(val);
-  switch (state) {
-    case 'added':
-      return `Property '${path}${key}' was added with value: ${newVal}`;
+  switch (type) {
+    case 'added': {
+      const val = formatOnType(node.val);
+      return `Property '${path}${key}' was added with value: ${val}`;
+    }
     case 'removed':
       return `Property '${path}${key}' was removed`;
     case 'updated': {
-      const newValUpdated = formatOnType(node.newVal);
-      return `Property '${path}${key}' was updated. From ${newVal} to ${newValUpdated}`;
+      const val1 = formatOnType(node.val1)
+      const val2 = formatOnType(node.val2);
+      return `Property '${path}${key}' was updated. From ${val1} to ${val2}`;
     }
     case 'noChanged': return '';
-    default: throw new Error(`Unknown state: ${state}`);
+    default: throw new Error(`Unknown type: ${type}`);
   }
 };
 
 const plain = (diff, path = '') => diff
   .map((node) => {
-    const { state, key, val } = node;
-    if (Array.isArray(val) && state === 'noChanged') {
+    const { type, key } = node;
+
+    // Остановился здесь 
+
+    if (node.hasOwnProperty('children') && type === 'noChanged') {
       return plain(val, `${path}${key}.`);
     }
     return buildLine(node, path);

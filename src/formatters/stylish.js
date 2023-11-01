@@ -10,19 +10,19 @@ const getIndents = (size) => {
 };
 
 const buildLine = (node, indents) => {
-  const { state, key, val } = node;
+  const { type, key } = node;
   const [indent, indentWithSign] = indents;
 
-  switch (state) {
+  switch (type) {
     case 'updated': {
-      const line1 = `${indentWithSign}- ${key}: ${val}`;
-      const line2 = `${indentWithSign}+ ${key}: ${node.newVal}`;
+      const line1 = `${indentWithSign}- ${key}: ${node.val1}`;
+      const line2 = `${indentWithSign}+ ${key}: ${node.val2}`;
       return [line1, line2].join('\n');
     }
-    case 'added': return `${indentWithSign}+ ${key}: ${val}`;
-    case 'removed': return `${indentWithSign}- ${key}: ${val}`;
-    case 'noChanged': return `${indent}${key}: ${val}`;
-    default: throw new Error(`Unknown state: ${state}`);
+    case 'added': return `${indentWithSign}+ ${key}: ${node.val}`;
+    case 'removed': return `${indentWithSign}- ${key}: ${node.val}`;
+    case 'noChanged': return `${indent}${key}: ${node.val}`;
+    default: throw new Error(`Unknown type: ${type}`);
   }
 };
 
@@ -33,11 +33,12 @@ export default (diff) => {
     const indentSize = depth * INDENTS_COUNT;
     const [indent, indentWithSign, bracketIndent] = getIndents(indentSize);
     const lines = node.map((obj) => {
-      const val = iter(obj.val, depth + 1);
-      if (obj.state === 'updated') {
-        const newVal = iter(obj.newVal, depth + 1);
-        return buildLine({ ...obj, val, newVal }, [indent, indentWithSign]);
+      if (obj.type === 'updated') {
+        const val1 = iter(obj.val1, depth + 1);
+        const val2 = iter(obj.val2, depth + 1);
+        return buildLine({ ...obj, val1, val2 }, [indent, indentWithSign]);
       }
+      const val = iter(obj.val, depth + 1);
       return buildLine({ ...obj, val }, [indent, indentWithSign]);
     });
 
