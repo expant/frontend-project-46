@@ -5,49 +5,46 @@ const genComplex = (node) => {
   return Object
     .entries(node)
     .flatMap(([key, val]) => {
-      const obj = { state: 'noChanged', key, val };
+      const obj = { type: 'noChanged', key, val };
       if (!_.isObject(val)) return obj;
-      return { ...obj, val: genComplex(val) };
+      return { ...obj, children: genComplex(val) };
     });
 };
 
-const checkWithEqualKeys = (obj1, obj2, key) => {
-  const valObj1 = obj1[key];
-  const valObj2 = obj2[key];
+const checkWithEqualKeys = (data1, data2, key) => {
+  const valObj1 = data1[key];
+  const valObj2 = data2[key];
 
   if (valObj1 === valObj2) {
-    return { state: 'noChanged', key, val: valObj1 };
+    return { type: 'noChanged', key, val: valObj1 };
   }
 
-  const val = genComplex(valObj1);
-  const newVal = genComplex(valObj2);
+  const val1 = genComplex(valObj1);
+  const val2 = genComplex(valObj2);
   return {
-    state: 'updated', key, val, newVal,
+    type: 'updated', key, val1, val2,
   };
 };
 
-const checkWithUnequalKeys = (obj1, obj2, key) => {
-  if (_.has(obj1, key) && !_.has(obj2, key)) {
-    const val = _.isObject(obj1[key]) ? genComplex(obj1[key]) : obj1[key];
-    return { state: 'removed', key, val };
-  }
-  const val = _.isObject(obj2[key]) ? genComplex(obj2[key]) : obj2[key];
-  return { state: 'added', key, val };
-};
-
-const genDiff = (obj1, obj2) => {
-  const keys = _.union(_.keys(obj1), _.keys(obj2));
-  const diff = keys.flatMap((key) => {
-    if (_.has(obj1, key) && _.has(obj2, key)) {
-      if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-        const val = genDiff(obj1[key], obj2[key]);
-        return { state: 'noChanged', key, val };
-      }
-
-      return checkWithEqualKeys(obj1, obj2, key);
+const genDiff = (data1, data2) => {
+  const keys = _.union(_.keys(data1), _.keys(data2));
+  const diff = keys.map((key) => {
+    if (!_.has(data1, key)) {
+      const val = _.isObject(data2[key]) ? genComplex(data2[key]) : data2[key];
+      return { type: 'added', key, val };
     }
 
-    return checkWithUnequalKeys(obj1, obj2, key);
+    if (!_.has(data2, key)) {
+      const val = _.isObject(data1[key]) ? genComplex(data1[key]) : data1[key];
+      return { type: 'removed', key, val };
+    }
+
+    if (_.isObject(data1[key]) && _.isObject(data2[key])) {
+      const children = genDiff(data1[key], data2[key]);
+      return { type: 'nested', key, children };
+    }
+    
+    return checkWithEqualKeys(data1, data2, key);
   });
 
   return _.sortBy(diff, 'key');
