@@ -31,11 +31,8 @@ const buildLine = (node, path) => {
 const plain = (diff, path = '') => diff
   .map((node) => {
     const { type, key } = node;
-
-    // Остановился здесь 
-
-    if (node.hasOwnProperty('children') && type === 'noChanged') {
-      return plain(val, `${path}${key}.`);
+    if (type === 'nested') {
+      return plain(node.children, `${path}${key}.`)
     }
     return buildLine(node, path);
   })

@@ -22,6 +22,7 @@ const buildLine = (node, indents) => {
     case 'added': return `${indentWithSign}+ ${key}: ${node.val}`;
     case 'removed': return `${indentWithSign}- ${key}: ${node.val}`;
     case 'noChanged': return `${indent}${key}: ${node.val}`;
+    case 'nested': return `${indent}${key}: ${node.children}`
     default: throw new Error(`Unknown type: ${type}`);
   }
 };
@@ -37,6 +38,10 @@ export default (diff) => {
         const val1 = iter(obj.val1, depth + 1);
         const val2 = iter(obj.val2, depth + 1);
         return buildLine({ ...obj, val1, val2 }, [indent, indentWithSign]);
+      }
+      if (obj.type === 'nested') {
+        const children = iter(obj.children, depth + 1);
+        return buildLine({ ...obj, children }, [indent, indentWithSign])
       }
       const val = iter(obj.val, depth + 1);
       return buildLine({ ...obj, val }, [indent, indentWithSign]);
