@@ -19,7 +19,7 @@ const buildLine = (node, path) => {
     case 'removed':
       return `Property '${path}${key}' was removed`;
     case 'updated': {
-      const val1 = formatOnType(node.val1)
+      const val1 = formatOnType(node.val1);
       const val2 = formatOnType(node.val2);
       return `Property '${path}${key}' was updated. From ${val1} to ${val2}`;
     }
@@ -32,7 +32,7 @@ const plain = (diff, path = '') => diff
   .map((node) => {
     const { type, key } = node;
     if (type === 'nested') {
-      return plain(node.children, `${path}${key}.`)
+      return plain(node.children, `${path}${key}.`);
     }
     return buildLine(node, path);
   })

@@ -7,8 +7,8 @@ import parse from './parsers.js';
 
 const extractFormat = (file, filepath) => {
   const extnameWithDot = extname(filepath);
-  return extnameWithDot.slice(1, extnameWithDot.length);  
-}
+  return extnameWithDot.slice(1, extnameWithDot.length);
+};
 
 const readFile = (filepath) => {
   const path = resolve(cwd(), '__fixtures__', filepath);
@@ -20,6 +20,6 @@ const readFile = (filepath) => {
 export default (filepath1, filepath2, formatName) => {
   const format = chooseFormat(formatName);
   return format(
-    genDiff(readFile(filepath1), readFile(filepath2))
+    genDiff(readFile(filepath1), readFile(filepath2)),
   );
 };
