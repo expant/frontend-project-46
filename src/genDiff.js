@@ -25,8 +25,11 @@ const checkWithEqualKeys = (data1, data2, key) => {
 };
 
 const genDiff = (data1, data2) => {
-  const keys = _.union(_.keys(data1), _.keys(data2));
-  const diff = keys.map((key) => {
+  const keys1 = Object.keys(data1);
+  const keys2 = Object.keys(data2);
+  const keys = _.sortBy(_.union(keys1, keys2));
+
+  return keys.map((key) => {
     if (!_.has(data1, key)) {
       return { type: 'added', key, val: getValOnType(data2[key]) };
     }
@@ -40,7 +43,6 @@ const genDiff = (data1, data2) => {
     }
     return checkWithEqualKeys(data1, data2, key);
   });
-  return _.sortBy(diff, 'key');
 };
 
 export default genDiff;
