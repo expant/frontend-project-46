@@ -1,65 +1,52 @@
 import _ from 'lodash';
 
-const INDENTS_COUNT = 4;
-const LEFT_SHIFT = 2;
-const REPLACER = '*';
+const getIndent = (depth) => {
+  const indentsCount = 4
+  const leftShift = 2;
+  const replacer = ' ';
 
-const getIndent = (depth, size) => REPLACER.repeat(depth * size);
-
-// indentWithSign: REPLACER.repeat((depth * size) - LEFT_SHIFT),
- 
-// const getIndents = (size) => {
-//   // const indent = REPLACER.repeat(size);
-//   const indent = REPLACER.repeat(size - LEFT_SHIFT);
-//   const bracketIndent = REPLACER.repeat(size - INDENTS_COUNT);
-//   return [indent, bracketIndent];
-// };
-
-const signs = {
-  added: '+',
-  removed: '-',
-  noChanged: ' ',
+  return {
+    indent: replacer.repeat(depth * indentsCount),
+    indentWithSign: replacer.repeat((depth * indentsCount) - leftShift),
+  }
 };
 
-const stringify = (data, type, depth) => {
-  if (!_.isObject(data)) {
-    return `${data}`;
-  }
-
+const stringify = (data, depth) => {
+  if (!_.isObject(data)) return `${data}`;
   const lines = Object
     .entries(data)
     .map(([key, val]) => {
-      console.log(getIndent(depth + 1));
-      return `${getIndent(depth + 1)}${signs[type]} ${key}: ${stringify(val)}`
+      const { indent } = getIndent(depth + 1);
+      const value = stringify(val, depth + 1);
+      return `${indent}${key}: ${value}`;
     });
 
-  return `{\n${lines.join('\n')}\n${getIndent(depth + 1)}}`;
+  return `{\n${lines.join('\n')}\n${getIndent(depth).indent}}`;
 };
 
 export default (diff) => {
   const iter = (node, depth) => {
-    // const { indent, indentWithSign } = getIndent(depth, INDENTS_COUNT);
+    const { indent, indentWithSign } = getIndent(depth);
+
     const lines = node.map((obj) => {
       const { type, key } = obj;
       switch (type) {
-        case 'added': return `${getIndent(depth)}+ ${key}: ${stringify(obj.val, type)}`; // stringify()
-        case 'removed': return `${getIndent(depth)}- ${stringify(obj.val, type)}`; // stringify()
+        case 'added': return `${indentWithSign}+ ${key}: ${stringify(obj.val, depth)}`;
+        case 'removed': return `${indentWithSign}- ${key}: ${stringify(obj.val, depth)}`;
         case 'updated': {
-          const val1 = stringify(obj.val1, 'removed');
-          const val2 = stringify(obj.val2, 'added');
-          const line1 = `${getIndent(depth)}- ${key}: ${val1}`; // stringify()
-          const line2 = `${getIndent(depth)}+ ${key}: ${val2}`; // stringify()
+          const line1 = `${indentWithSign}- ${key}: ${stringify(obj.val1, depth)}`;
+          const line2 = `${indentWithSign}+ ${key}: ${stringify(obj.val2, depth)}`;
           return [line1, line2].join('\n');
         }
         case 'nested': {
           const children = iter(obj.children, depth + 1);
-          return `${getIndent(depth)}${key}: ${children}`; 
+          return `${indent}${key}: ${children}`; 
         }
-        case 'noChanged': return `${getIndent(depth)}${key}: ${stringify(obj.val, type)}`;
+        case 'noChanged': return `${indent}${key}: ${stringify(obj.val, depth)}`;
         default: throw new Error(`Unknown type: ${type}`);   
       }
     }); 
-    return `{\n${lines.join('\n')}\n${getIndent(depth)}}`;
+    return `{\n${lines.join('\n')}\n${indent}}`;
   };
-  return iter(diff, 0);
+  return iter(diff, 1);
 };

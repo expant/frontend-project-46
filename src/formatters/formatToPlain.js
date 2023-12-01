@@ -1,5 +1,7 @@
+import _ from 'lodash';
+
 const formatOnType = (val) => {
-  if (Array.isArray(val)) {
+  if (_.isObject(val)) {
     return '[complex value]';
   }
   if (typeof (val) === 'string') {
@@ -16,8 +18,7 @@ const buildLine = (node, path) => {
       const val = formatOnType(node.val);
       return `Property '${path}${key}' was added with value: ${val}`;
     }
-    case 'removed':
-      return `Property '${path}${key}' was removed`;
+    case 'removed': return `Property '${path}${key}' was removed`;
     case 'updated': {
       const val1 = formatOnType(node.val1);
       const val2 = formatOnType(node.val2);
