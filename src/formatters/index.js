@@ -7,6 +7,6 @@ export default (formatName = 'stylish') => {
     case 'stylish': return formatToStylish;
     case 'plain': return formatToPlain;
     case 'json': return formatToJson;
-    default: throw new Error('Unknown format name ${formatName}');
+    default: throw new Error(`Unknown format name ${formatName}`);
   }
 };
