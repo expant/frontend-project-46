@@ -4,6 +4,9 @@ install:
 lint: 
 	npx eslint .
 
+lint-fix:
+	npx eslint . --fix
+
 gendiff:
 	node ./index.js
 
